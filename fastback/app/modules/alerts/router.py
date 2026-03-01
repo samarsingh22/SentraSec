@@ -3,11 +3,10 @@ from app.core.mongodb import get_db
 
 router = APIRouter(prefix="/alerts", tags=["Security Alerts"])
 
-db = get_db
-
 @router.get("/")
 async def get_alerts(limit: int = 50):
-
+    db = get_db()
+    
     cursor = (
         db.security_alerts
         .find()

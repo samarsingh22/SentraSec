@@ -17,9 +17,12 @@ class EventManager:
         await db.security_events.insert_one(event_dict)
 
         # 🔴 REAL-TIME BROADCAST
+        broadcast_data = event_dict.copy()
+        broadcast_data["timestamp"] = event_dict["timestamp"].isoformat()
+        
         await stream_manager.broadcast({
             "type": "security_event",
-            "data": event_dict
+            "data": broadcast_data
         })
 
         # ALERT CREATION

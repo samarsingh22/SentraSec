@@ -1,16 +1,149 @@
-# React + Vite
+# 🔴 CYBER-SOC TERMINAL - Hardcore Hacker Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A deadly red/black themed security operations center frontend with Matrix visualization, inspired by Nmap and cybersecurity tools.
 
-Currently, two official plugins are available:
+## 🎨 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Matrix Rain Background** - Animated red matrix effect
+- **Real-time Event Streaming** - WebSocket connection for live security events
+- **Malware Scanner** - File scanning with visual feedback
+- **Active Threats Panel** - Filterable alert system with severity levels
+- **Hardcore Hacker Aesthetic** - Red/black color scheme with glowing effects
 
-## React Compiler
+## 🚀 Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
+- Node.js 16+ installed
+- Backend server running (FastAPI)
 
-## Expanding the ESLint configuration
+### Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+cd frontend/soc-frontend
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+The frontend will run on `http://localhost:5173`
+
+## 🔧 Configuration
+
+### Connecting to Backend
+
+1. Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+
+2. Edit `.env` and set your backend URL:
+```env
+VITE_API_BASE_URL=http://your-backend-server:8000
+```
+
+### For Different Servers
+
+If deploying frontend and backend on different servers:
+
+1. **Update `.env` file** with your backend server URL
+2. **Ensure CORS is enabled** on backend (already configured in main.py)
+3. **Use HTTPS** for production deployments
+
+Example for production:
+```env
+VITE_API_BASE_URL=https://api.yourdomain.com
+```
+
+## 📦 Build for Production
+
+```bash
+npm run build
+```
+
+This creates a `dist/` folder with optimized static files.
+
+### Deploy Static Files
+
+Upload the `dist/` folder to any static hosting:
+- Netlify
+- Vercel
+- AWS S3 + CloudFront
+- Nginx/Apache server
+
+### Nginx Configuration Example
+
+```nginx
+server {
+    listen 80;
+    server_name your-frontend-domain.com;
+    
+    root /path/to/dist;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+## 🔌 Backend Connection
+
+The frontend connects to these backend endpoints:
+
+- `GET /events` - Fetch security events
+- `GET /alerts` - Fetch active alerts
+- `POST /antivirus/scan?file_name=<name>` - Scan files
+- `WS /ws/soc` - WebSocket for real-time updates
+
+## 🎯 Backend Bugs Fixed
+
+1. **alerts/router.py** - Fixed `get_db` function call
+2. **event_manager.py** - Fixed datetime serialization for WebSocket broadcast
+
+## 🎨 Theme Customization
+
+Edit `src/index.css` to customize colors:
+
+```css
+:root {
+  --hacker-red: #ff0000;
+  --blood-red: #8b0000;
+  --neon-red: #ff3131;
+  --matrix-green: #00ff41;
+}
+```
+
+## 📱 Components
+
+- **MatrixBackground** - Animated matrix rain effect
+- **ScanForm** - File scanning interface
+- **EventFeed** - Live security event stream
+- **AlertPanel** - Active threats with filtering
+
+## 🔒 Security Notes
+
+- Never commit `.env` file with production credentials
+- Use HTTPS in production
+- Configure proper CORS settings on backend
+- Implement authentication for production use
+
+## 🐛 Troubleshooting
+
+### WebSocket Connection Failed
+- Check backend URL in `.env`
+- Ensure backend is running
+- Verify CORS settings
+- Check firewall rules
+
+### API Calls Failing
+- Verify `VITE_API_BASE_URL` in `.env`
+- Check backend server is accessible
+- Inspect browser console for errors
+
+## 📄 License
+
+MIT
