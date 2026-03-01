@@ -69,28 +69,152 @@ export default function NetworkTraffic() {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
       {/* Bar Plot */}
       <div className="panel">
-        <div className="panel-title">📊 TRAFFIC BAR PLOT</div>
-        <div style={{ height: '300px', display: 'flex', alignItems: 'flex-end', gap: '8px', padding: '15px' }}>
-          {traffic.slice(-10).map((data, i) => (
-            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
-                <div style={{ 
-                  width: '100%',
-                  height: `${data.incoming}%`,
-                  background: '#00ff41',
-                  border: '2px solid #00ff41',
-                  boxShadow: '0 0 10px rgba(0, 255, 65, 0.7)',
-                  marginBottom: '2px'
-                }} />
-              </div>
-              <div style={{ fontSize: '0.6rem', color: '#00ff41', textAlign: 'center' }}>{data.incoming}</div>
-            </div>
-          ))}
+  <div className="panel-title">📊 TRAFFIC MONITORING DASHBOARD</div>
+  
+  {/* Main Traffic Bar Plot */}
+  <div style={{ marginBottom: '20px' }}>
+    <div style={{ fontSize: '0.8rem', color: '#00ff41', marginBottom: '5px', paddingLeft: '15px' }}>
+      📈 INCOMING TRAFFIC (Last 10 Samples)
+    </div>
+    <div style={{ height: '200px', display: 'flex', alignItems: 'flex-end', gap: '8px', padding: '15px' }}>
+      {traffic.slice(-10).map((data, i) => (
+        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
+            <div style={{ 
+              width: '100%',
+              height: `${data.incoming}%`,
+              background: '#00ff41',
+              border: '2px solid #00ff41',
+              boxShadow: '0 0 10px rgba(0, 255, 65, 0.7)',
+              marginBottom: '2px',
+              transition: 'height 0.3s ease'
+            }} />
+          </div>
+          <div style={{ fontSize: '0.6rem', color: '#00ff41', textAlign: 'center' }}>{data.incoming}</div>
         </div>
-        <div style={{ textAlign: 'center', fontSize: '0.7rem', marginTop: '10px', color: '#00ff41' }}>
-          ■ INCOMING TRAFFIC (Mbps)
+      ))}
+    </div>
+  </div>
+
+  {/* Line Graph for Traffic Trend */}
+  <div style={{ marginBottom: '20px', padding: '0 15px' }}>
+    <div style={{ fontSize: '0.8rem', color: '#00ff41', marginBottom: '10px' }}>
+      📉 TRAFFIC TREND
+    </div>
+    <div style={{ height: '120px', display: 'flex', alignItems: 'flex-end', gap: '2px', position: 'relative' }}>
+      {/* Line Graph */}
+      <svg width="100%" height="120" style={{ position: 'absolute', top: 0, left: 0 }}>
+        <polyline
+          points={traffic.slice(-20).map((data, i) => {
+            const x = (i / 19) * 100;
+            const y = 120 - (data.incoming * 1.2);
+            return `${x}%,${y}`;
+          }).join(' ')}
+          fill="none"
+          stroke="#00ff41"
+          strokeWidth="2"
+          strokeDasharray="5,5"
+        />
+      </svg>
+      {/* Data Points */}
+      {traffic.slice(-20).map((data, i) => (
+        <div key={i} style={{ 
+          flex: 1, 
+          height: `${data.incoming * 1.2}px`, 
+          background: 'rgba(0, 255, 65, 0.2)',
+          borderLeft: '1px solid #00ff41',
+          position: 'relative'
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '-15px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            fontSize: '0.5rem',
+            color: '#00ff41'
+          }}>
+            {data.incoming}
+          </div>
         </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Pie Chart for Traffic Distribution */}
+  <div style={{ display: 'flex', gap: '20px', padding: '15px', alignItems: 'center' }}>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontSize: '0.8rem', color: '#00ff41', marginBottom: '10px' }}>
+        🥧 TRAFFIC DISTRIBUTION
       </div>
+      <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto' }}>
+        {/* Simple Pie Chart */}
+        <svg viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
+          {/* Incoming Traffic Slice */}
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#00ff41"
+            strokeWidth="20"
+            strokeDasharray={`${(traffic[traffic.length-1]?.incoming || 50) * 2.51} 251`}
+            strokeLinecap="round"
+          />
+          {/* Outgoing Traffic Slice */}
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#ff41"
+            strokeWidth="20"
+            strokeDasharray={`${(100 - (traffic[traffic.length-1]?.incoming || 50)) * 2.51} 251`}
+            strokeDashoffset={`-${(traffic[traffic.length-1]?.incoming || 50) * 2.51}`}
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
+    </div>
+    
+    {/* Legend */}
+    <div style={{ flex: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
+        <div style={{ width: '12px', height: '12px', background: '#00ff41', borderRadius: '2px' }}></div>
+        <span style={{ color: '#00ff41', fontSize: '0.7rem' }}>Incoming: {traffic[traffic.length-1]?.incoming || 0}%</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ width: '12px', height: '12px', background: '#ff41', borderRadius: '2px' }}></div>
+        <span style={{ color: '#00ff41', fontSize: '0.7rem' }}>Outgoing: {100 - (traffic[traffic.length-1]?.incoming || 50)}%</span>
+      </div>
+    </div>
+  </div>
+
+  {/* Summary Stats */}
+  <div style={{ display: 'flex', justifyContent: 'space-around', padding: '15px', borderTop: '1px solid #00ff41' }}>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: '0.6rem', color: '#00ff41', opacity: 0.7 }}>AVG TRAFFIC</div>
+      <div style={{ fontSize: '1rem', color: '#00ff41' }}>
+        {Math.round(traffic.reduce((acc, curr) => acc + curr.incoming, 0) / traffic.length)} Mbps
+      </div>
+    </div>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: '0.6rem', color: '#00ff41', opacity: 0.7 }}>MAX TRAFFIC</div>
+      <div style={{ fontSize: '1rem', color: '#00ff41' }}>
+        {Math.max(...traffic.map(d => d.incoming))} Mbps
+      </div>
+    </div>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: '0.6rem', color: '#00ff41', opacity: 0.7 }}>MIN TRAFFIC</div>
+      <div style={{ fontSize: '1rem', color: '#00ff41' }}>
+        {Math.min(...traffic.map(d => d.incoming))} Mbps
+      </div>
+    </div>
+  </div>
+
+  <div style={{ textAlign: 'center', fontSize: '0.7rem', marginTop: '10px', color: '#00ff41' }}>
+    ■ REAL-TIME TRAFFIC MONITORING (Mbps)
+  </div>
+</div>
 
       {/* Pie Chart */}
       <div className="panel">
